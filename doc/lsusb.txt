@@ -123,6 +123,7 @@ can't get debug descriptor: Resource temporarily unavailable
 Device Status:     0x0000
   (Bus Powered)
 
+
   
   
 # Stick #
@@ -171,8 +172,90 @@ Device Descriptor:
           bNumDescriptors         1
           bDescriptorType        34 Report
           wDescriptorLength     103
-         Report Descriptors: 
-           ** UNAVAILABLE **
+          Report Descriptor: (length is 103)
+            Item(Global): Usage Page, data= [ 0x01 ] 1
+                            Generic Desktop Controls
+            Item(Local ): Usage, data= [ 0x04 ] 4
+                            Joystick
+            Item(Main  ): Collection, data= [ 0x01 ] 1
+                            Application
+            Item(Local ): Usage, data= [ 0x01 ] 1
+                            Pointer
+            Item(Main  ): Collection, data= [ 0x00 ] 0
+                            Physical
+            Item(Local ): Usage, data= [ 0x30 ] 48
+                            Direction-X
+            Item(Local ): Usage, data= [ 0x31 ] 49
+                            Direction-Y
+            Item(Global): Logical Minimum, data= [ 0x00 ] 0
+            Item(Global): Logical Maximum, data= [ 0xff 0xff 0x00 0x00 ] 65535
+            Item(Global): Report Size, data= [ 0x10 ] 16
+            Item(Global): Report Count, data= [ 0x02 ] 2
+            Item(Main  ): Input, data= [ 0x02 ] 2
+                            Data Variable Absolute No_Wrap Linear
+                            Preferred_State No_Null_Position Non_Volatile 
+Bitfield
+            Item(Local ): Usage, data= [ 0x35 ] 53
+                            Rotate-Z
+            Item(Global): Logical Minimum, data= [ 0x00 ] 0
+            Item(Global): Logical Maximum, data= [ 0xff 0x0f ] 4095
+            Item(Global): Report Size, data= [ 0x0c ] 12
+            Item(Global): Report Count, data= [ 0x01 ] 1
+            Item(Main  ): Input, data= [ 0x02 ] 2
+                            Data Variable Absolute No_Wrap Linear
+                            Preferred_State No_Null_Position Non_Volatile 
+Bitfield
+            Item(Global): Usage Page, data= [ 0x01 ] 1
+                            Generic Desktop Controls
+            Item(Local ): Usage, data= [ 0x39 ] 57
+                            Hat Switch
+            Item(Global): Logical Minimum, data= [ 0x01 ] 1
+            Item(Global): Logical Maximum, data= [ 0x08 ] 8
+            Item(Global): Physical Minimum, data= [ 0x00 ] 0
+            Item(Global): Physical Maximum, data= [ 0x3b 0x01 ] 315
+            Item(Global): Unit, data= [ 0x14 0x00 ] 20
+                            System: English Rotation, Unit: Degrees
+            Item(Global): Report Size, data= [ 0x04 ] 4
+            Item(Global): Report Count, data= [ 0x01 ] 1
+            Item(Main  ): Input, data= [ 0x42 ] 66
+                            Data Variable Absolute No_Wrap Linear
+                            Preferred_State Null_State Non_Volatile Bitfield
+            Item(Global): Usage Page, data= [ 0x09 ] 9
+                            Buttons
+            Item(Local ): Usage Minimum, data= [ 0x01 ] 1
+                            Button 1 (Primary)
+            Item(Local ): Usage Maximum, data= [ 0x11 ] 17
+                            (null)
+            Item(Global): Logical Minimum, data= [ 0x00 ] 0
+            Item(Global): Logical Maximum, data= [ 0x01 ] 1
+            Item(Global): Report Count, data= [ 0x11 ] 17
+            Item(Global): Report Size, data= [ 0x01 ] 1
+            Item(Main  ): Input, data= [ 0x02 ] 2
+                            Data Variable Absolute No_Wrap Linear
+                            Preferred_State No_Null_Position Non_Volatile 
+Bitfield
+            Item(Global): Report Size, data= [ 0x07 ] 7
+            Item(Global): Report Count, data= [ 0x01 ] 1
+            Item(Main  ): Input, data= [ 0x01 ] 1
+                            Constant Array Absolute No_Wrap Linear
+                            Preferred_State No_Null_Position Non_Volatile 
+Bitfield
+            Item(Global): Usage Page, data= [ 0x01 ] 1
+                            Generic Desktop Controls
+            Item(Local ): Usage, data= [ 0x33 ] 51
+                            Rotate-X
+            Item(Local ): Usage, data= [ 0x34 ] 52
+                            Rotate-Y
+            Item(Global): Logical Minimum, data= [ 0x00 ] 0
+            Item(Global): Logical Maximum, data= [ 0xff 0x00 ] 255
+            Item(Global): Report Size, data= [ 0x08 ] 8
+            Item(Global): Report Count, data= [ 0x02 ] 2
+            Item(Main  ): Input, data= [ 0x02 ] 2
+                            Data Variable Absolute No_Wrap Linear
+                            Preferred_State No_Null_Position Non_Volatile 
+Bitfield
+            Item(Main  ): End Collection, data=none
+            Item(Main  ): End Collection, data=none
       Endpoint Descriptor:
         bLength                 7
         bDescriptorType         5
@@ -231,8 +314,86 @@ Device Descriptor:
           bNumDescriptors         1
           bDescriptorType        34 Report
           wDescriptorLength      88
-         Report Descriptors: 
-           ** UNAVAILABLE **
+          Report Descriptor: (length is 88)
+            Item(Global): Usage Page, data= [ 0x00 0xff ] 65280
+                            (null)
+            Item(Local ): Usage, data= [ 0x01 ] 1
+                            (null)
+            Item(Main  ): Collection, data= [ 0x01 ] 1
+                            Application
+            Item(Global): Logical Minimum, data= [ 0x00 ] 0
+            Item(Global): Logical Maximum, data= [ 0xff 0x00 ] 255
+            Item(Local ): Usage, data= [ 0x00 ] 0
+                            (null)
+            Item(Main  ): Collection, data= [ 0x02 ] 2
+                            Logical
+            Item(Global): Report ID, data= [ 0xff ] 255
+            Item(Local ): Usage, data= [ 0x20 ] 32
+                            (null)
+            Item(Global): Report Size, data= [ 0x08 ] 8
+            Item(Global): Report Count, data= [ 0x3f ] 63
+            Item(Main  ): Input, data= [ 0x02 ] 2
+                            Data Variable Absolute No_Wrap Linear
+                            Preferred_State No_Null_Position Non_Volatile 
+Bitfield
+            Item(Main  ): End Collection, data=none
+            Item(Local ): Usage, data= [ 0x01 ] 1
+                            (null)
+            Item(Main  ): Collection, data= [ 0x02 ] 2
+                            Logical
+            Item(Global): Report ID, data= [ 0x01 ] 1
+            Item(Local ): Usage, data= [ 0x21 ] 33
+                            (null)
+            Item(Global): Report Size, data= [ 0x08 ] 8
+            Item(Global): Report Count, data= [ 0x3f ] 63
+            Item(Main  ): Feature, data= [ 0x02 ] 2
+                            Data Variable Absolute No_Wrap Linear
+                            Preferred_State No_Null_Position Non_Volatile 
+Bitfield
+            Item(Main  ): End Collection, data=none
+            Item(Local ): Usage, data= [ 0x02 ] 2
+                            (null)
+            Item(Main  ): Collection, data= [ 0x02 ] 2
+                            Logical
+            Item(Global): Report ID, data= [ 0x08 ] 8
+            Item(Local ): Usage, data= [ 0x22 ] 34
+                            (null)
+            Item(Global): Report Size, data= [ 0x08 ] 8
+            Item(Global): Report Count, data= [ 0x10 ] 16
+            Item(Main  ): Feature, data= [ 0x02 ] 2
+                            Data Variable Absolute No_Wrap Linear
+                            Preferred_State No_Null_Position Non_Volatile 
+Bitfield
+            Item(Main  ): End Collection, data=none
+            Item(Local ): Usage, data= [ 0x03 ] 3
+                            (null)
+            Item(Main  ): Collection, data= [ 0x02 ] 2
+                            Logical
+            Item(Global): Report ID, data= [ 0x09 ] 9
+            Item(Local ): Usage, data= [ 0x23 ] 35
+                            (null)
+            Item(Global): Report Size, data= [ 0x08 ] 8
+            Item(Global): Report Count, data= [ 0x3f ] 63
+            Item(Main  ): Feature, data= [ 0x02 ] 2
+                            Data Variable Absolute No_Wrap Linear
+                            Preferred_State No_Null_Position Non_Volatile 
+Bitfield
+            Item(Main  ): End Collection, data=none
+            Item(Local ): Usage, data= [ 0x05 ] 5
+                            (null)
+            Item(Main  ): Collection, data= [ 0x02 ] 2
+                            Logical
+            Item(Global): Report ID, data= [ 0x0b ] 11
+            Item(Local ): Usage, data= [ 0x25 ] 37
+                            (null)
+            Item(Global): Report Size, data= [ 0x08 ] 8
+            Item(Global): Report Count, data= [ 0x3f ] 63
+            Item(Main  ): Feature, data= [ 0x02 ] 2
+                            Data Variable Absolute No_Wrap Linear
+                            Preferred_State No_Null_Position Non_Volatile 
+Bitfield
+            Item(Main  ): End Collection, data=none
+            Item(Main  ): End Collection, data=none
       Endpoint Descriptor:
         bLength                 7
         bDescriptorType         5
@@ -247,3 +408,4 @@ can't get device qualifier: Resource temporarily unavailable
 can't get debug descriptor: Resource temporarily unavailable
 Device Status:     0x0000
   (Bus Powered)
+
