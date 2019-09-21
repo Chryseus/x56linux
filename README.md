@@ -1,6 +1,5 @@
 
 # x56linux
-hosted_button_id=4334N54KCX4E4&source=url)
 Saitek X-56 Rhino Pro Flight Calibration and RGB lighting software for Linux.
 Also sold as Logitech G Pro Flight X56
 
