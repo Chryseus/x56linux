@@ -93,8 +93,13 @@ bool usb_set_report_request(libusb_device_handle* dev, word wValue, word wIndex,
 {
     if(dev)
     {
-        //0x300
+        // https://www.usb.org/sites/default/files/documents/hid1_11.pdf
         int bytes = libusb_control_transfer(dev, 0x21, 0x09, wValue, wIndex, data, wLength, 4000);
+        if (bytes < 0)
+        {
+            fprintf(stderr, "Control transfer failed.\n");
+            exit(-1);
+        }
         return false;
     }
     else
