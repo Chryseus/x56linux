@@ -1,11 +1,11 @@
 language: C++
 os:
-  linux
-  osx
+  - linux
+  - osx
 
 compiler:
-  g++
-  clang
+  - g++
+  - clang
  
 script: make
 before_install:
