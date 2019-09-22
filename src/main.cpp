@@ -71,7 +71,7 @@ int main(int argc, char* argv[])
         cerr << "Failed to initialise libusb." << endl;
         return -1;
     }
-    libusb_set_option(usb->context, LIBUSB_OPTION_LOG_LEVEL, LIBUSB_LOG_LEVEL_INFO);
+    // libusb_set_option(usb->context, LIBUSB_OPTION_LOG_LEVEL, LIBUSB_LOG_LEVEL_INFO);
 
     usb->list_devices();
 
