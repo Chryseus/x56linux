@@ -9,5 +9,5 @@ compiler:
  
 script: make
 before_install:
-  if [ "$TRAVIS_OS_NAME" = "osx" ]; then brew install libusb
-  if [ "$TRAVIS_OS_NAME" = "linux" ]; then brew installsudo apt-get install -y libusb-dev libusb-1.0-0 libusb-1.0-0-dev libudev1
+   - if [ "$TRAVIS_OS_NAME" = "osx" ]; then brew install libusb
+   - if [ "$TRAVIS_OS_NAME" = "linux" ]; then sudo apt-get install -y libusb-dev libusb-1.0-0 libusb-1.0-0-dev libudev1
