@@ -6,4 +6,4 @@ x56: usb.cpp main.cpp
 		$(CC) $(CFLAGS) $(LDFLAGS) $? -o $@
 
 #x56-2: hidapi.c
-#	$(CC) $(CFLAGS) $(LDFLAGS) $? -o $@
+#	$(CC) $(CFLAGS) $? -o $@ $(LDFLAGS)
