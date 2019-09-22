@@ -1,2 +1,4 @@
 language: C++
 script: make
+before_install:
+  sudo apt-get install -y libusb-1.0-0-dev
