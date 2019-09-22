@@ -2,7 +2,7 @@
 #define USB_H
 
 #include <vector>
-#include <libusb.h>
+#include <libusb-1.0/libusb.h>
 using namespace std;
 
 enum device { DEV_X56_JOYSTICK, DEV_X56_THROTTLE };
