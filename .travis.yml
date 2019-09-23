@@ -13,8 +13,8 @@ addons:
   homebrew:
     packages:
       - beanstalk
-    apt:
-      packages:
-        - libusb-1.0-0
-        - libusb-1.0-0-dev
+  apt:
+    packages:
+      - libusb-1.0-0
+      - libusb-1.0-0-dev
   
