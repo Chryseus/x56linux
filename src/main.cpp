@@ -55,7 +55,7 @@ int main(int argc, char* argv[])
         cerr << "Failed to initialise libusb." << endl;
         return -1;
     }
-    libusb_set_option(Usb->Context, LIBUSB_OPTION_LOG_LEVEL, LIBUSB_LOG_LEVEL_INFO);
+    libusb_set_option(Usb->Context, LIBUSB_OPTION_LOG_LEVEL, LIBUSB_LOG_LEVEL_WARNING);
 
     if ((count = Usb->listDevices()) < 0)
     {
