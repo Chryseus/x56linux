@@ -3,58 +3,41 @@
 
 using namespace std;
 
+byte PACKET_END[63] = {0x01, 0x01};
 
-
-
-
-
-
-byte packet_end[63] = {0x01, 0x01};
-
-void list_devices(usb_root& usb)
+void processArguments(int argc, char** argv)
 {
 
 }
 
-void process_arguments(int argc, char** argv)
+
+byte* getColorPacket(byte red, byte green, byte blue)
 {
-
-
-
-}
-
-
-byte* get_color_packet(byte red, byte green, byte blue)
-{
-    byte* rgb_packet = new byte[63];
-    //rgb_packet[0] = 0x00;
-    rgb_packet[0] = 0x09;
-    rgb_packet[1] = 0x00;
-    rgb_packet[2] = 0x03;
-    rgb_packet[3] = red;
-    rgb_packet[4] = green;
-    rgb_packet[5] = blue;
+    byte* colorPacket = new byte[63];
+    colorPacket[0] = 0x09;
+    colorPacket[1] = 0x00;
+    colorPacket[2] = 0x03;
+    colorPacket[3] = red;
+    colorPacket[4] = green;
+    colorPacket[5] = blue;
     for (int i = 6; i <= 63; i++)
     {
-        rgb_packet[i] = 0x00;
+        colorPacket[i] = 0x00;
     }
-    return rgb_packet;
+    return colorPacket;
 }
 
-void set_rgb(libusb_device_handle* dev, byte red, byte green, byte blue)
+void setColor(usb_root &Usb, usb_device &Device, byte red, byte green, byte blue)
 {
-    if (dev)
-    {
-        auto color = get_color_packet(red, green, blue);
-        usb_set_report_request(dev, 0x309, (2<<8), color, 64);
-        usb_set_report_request(dev, 0x300, (2<<8), packet_end, 64);
-        delete[] color;
-    }
+    auto Color = getColorPacket(red, green, blue);
+    Usb.usbSetReportRequest(Device, 0x309, (2<<8), Color, 64);
+    Usb.usbSetReportRequest(Device, 0x300, (2<<8), PACKET_END, 64);
+    delete[] Color;
 }
 
-void print_packet(byte* packet)
+void printPacket(byte* packet)
 {
-    for (int i = 0; i < 64; i++)
+    for (auto i = 0; i < 64; i++)
     {
         cout << packet[i] << " ";
         if (i+1 > 1 && (i+1) % 8 == 0) { cout << endl; }
@@ -64,16 +47,26 @@ void print_packet(byte* packet)
 
 int main(int argc, char* argv[])
 {
-    auto usb = new usb_root;
+    auto Usb = new usb_root;
+    int count = 0;
 
-    if (libusb_init(&usb->context) != 0)
+    if (libusb_init(&Usb->Context) < 0)
     {
         cerr << "Failed to initialise libusb." << endl;
         return -1;
     }
-    // libusb_set_option(usb->context, LIBUSB_OPTION_LOG_LEVEL, LIBUSB_LOG_LEVEL_INFO);
+    libusb_set_option(Usb->Context, LIBUSB_OPTION_LOG_LEVEL, LIBUSB_LOG_LEVEL_INFO);
 
-    usb->list_devices();
+    if ((count = Usb->listDevices()) < 0)
+    {
+        cerr << "Failed to get device list." << endl;
+        return -1;
+    }
+
+    if (count == 0)
+    {
+        cout << "Unable to find any compatible devices." << endl;
+    }
 
     // Find the matching usb devices
 

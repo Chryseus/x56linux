@@ -3,81 +3,85 @@
 
 using namespace std;
 
-int usb_root::list_devices()
+int usb_root::listDevices()
 {
-    libusb_device** device_list;
-    ssize_t device_count;
+    libusb_device** DeviceList;
+    ssize_t deviceCount;
+    int found_devices = 0;
 
-    device_count = libusb_get_device_list(this->context, &device_list);
-    if ( device_count < 0 )
+    deviceCount = libusb_get_device_list(this->Context, &DeviceList);
+    if ( deviceCount < 0 )
     {
         cerr <<  "Failed to get device list." << endl;
         return -1;
     }
 
     /* Iterate through all devices and add matching ones to a list */
-    for (auto i = 0; i < device_count; i++)
+    for (auto i = 0; i < deviceCount; i++)
     {
-        struct libusb_device_descriptor descriptor;
-        libusb_device* temp = device_list[i];
+        struct libusb_device_descriptor Descriptor;
+        auto Temp = DeviceList[i];
 
-        if (libusb_get_device_descriptor(temp, &descriptor) < 0 )
+        if (libusb_get_device_descriptor(Temp, &Descriptor) < 0 )
         {
             cerr << "Failed to get device descriptor." << endl;
             return -1;
         }
 
-        if (descriptor.idVendor == vendor_id)
+        if (Descriptor.idVendor == VENDOR_ID)
         {
-            if(descriptor.idProduct == 0x2221)
+            if(Descriptor.idProduct == 0x2221)
             {
-                auto dev = new usb_device;
-                dev->device = temp;
-                dev->idVendor = descriptor.idVendor;
-                dev->idProduct = descriptor.idProduct;
-                dev->identifier = DEV_X56_JOYSTICK;
-                dev->interface = 2;
-                if(libusb_open(dev->device, &dev->handle) !=  0)
+                auto Device = new usb_device;
+                Device->Device = Temp;
+                Device->idVendor = Descriptor.idVendor;
+                Device->idProduct = Descriptor.idProduct;
+                Device->identifier = DEV_X56_JOYSTICK;
+                Device->interface = 2;
+                if(libusb_open(Device->Device, &Device->Handle) !=  0)
                 {
-                    cerr << "Failed to get joystick handle, are you root?." << endl;
+                    cerr << "Failed to get device handle, are you root?." << endl;
                     return -1;
                 }
-                dev->id = this->device_list.size()+1;
-                this->device_list.push_back(dev);
-                cout << this->device_list.size() << ": X-56 Joystick" << endl;
+                Device->bus = libusb_get_bus_number(Temp);
+                Device->port = libusb_get_device_address(Temp);
+                Device->id = this->DeviceList.size()+1;
+                this->DeviceList.push_back(Device);
+                cout << this->DeviceList.size() << ": X-56 Joystick" << endl;
+                found_devices++;
             }
-            if(descriptor.idProduct == 0xa221)
+            if(Descriptor.idProduct == 0xa221)
             {
-                auto dev = new usb_device;
-                dev->device = temp;
-                dev->idVendor = descriptor.idVendor;
-                dev->idProduct = descriptor.idProduct;
-                dev->identifier = DEV_X56_THROTTLE;
-                dev->interface = 2;
-                if(libusb_open(dev->device, &dev->handle) !=  0)
+                auto Device = new usb_device;
+                Device->Device = Temp;
+                Device->idVendor = Descriptor.idVendor;
+                Device->idProduct = Descriptor.idProduct;
+                Device->identifier = DEV_X56_THROTTLE;
+                Device->interface = 2;
+                if(libusb_open(Device->Device, &Device->Handle) !=  0)
                 {
-                    cerr << "Failed to get throttle handle, are you root?." << endl;
+                    cerr << "Failed to get device handle, are you root?." << endl;
                     return -1;
                 }
-                dev->id = this->device_list.size()+1;
-                this->device_list.push_back(dev);
-                cout << this->device_list.size() << ": X-56 Throttle" << endl;
-
+                Device->id = this->DeviceList.size()+1;
+                this->DeviceList.push_back(Device);
+                cout << this->DeviceList.size() << ": X-56 Throttle" << endl;
+                found_devices++;
             }
         }
     }
-    libusb_free_device_list(device_list, 1);
-    return 0;
+    libusb_free_device_list(DeviceList, 1);
+    return found_devices;
 }
 
 
 
-unsigned char usb_root::usb_get_configuration(libusb_device_handle* dev, bool print)
+unsigned char usb_root::usbGetConfiguration(usb_device& Device, bool print)
 {
-    if(dev)
+    if(Device.Handle)
     {
         unsigned char configuration = 0xFF;
-        int bytes = libusb_control_transfer(dev, 0x80, 8, 0,0, &configuration, 1, 4000);
+        int bytes = libusb_control_transfer(Device.Handle, 0x80, 8, 0,0, &configuration, 1, 4000);
         if (bytes <= 0 || configuration == 0xFF)
         {
             cerr << "GET_CONFIGURATION failed." << endl;
@@ -97,11 +101,11 @@ unsigned char usb_root::usb_get_configuration(libusb_device_handle* dev, bool pr
 }
 
 
-bool usb_set_configuration(libusb_device_handle* dev, byte config)
+bool usb_root::usbSetConfiguration(usb_device& Device, byte config)
 {
-    if(dev)
+    if(Device.Handle)
     {
-        int bytes = libusb_control_transfer(dev, 0x00, 9, config, 0, NULL, 0, 4000);
+        int bytes = libusb_control_transfer(Device.Handle, 0x00, 9, config, 0, NULL, 0, 4000);
         if (bytes <= 0)
         {
             cerr << "SET_CONFIGURATION failed." << endl;
@@ -117,12 +121,12 @@ bool usb_set_configuration(libusb_device_handle* dev, byte config)
     return true;
 }
 
-byte* usb_get_status(libusb_device_handle* dev, bool print, byte bmRequestType, byte wIndex)
+byte* usb_root::usbGetStatus(usb_device& Device, bool print, byte bmRequestType, byte wIndex)
 {
     byte* status = new(byte[1]);
-    if(dev)
+    if(Device.Handle)
     {
-        int bytes = libusb_control_transfer(dev, bmRequestType, 0, 0, wIndex, status, 2, 4000);
+        int bytes = libusb_control_transfer(Device.Handle, bmRequestType, 0, 0, wIndex, status, 2, 4000);
         if (bytes <= 0)
         {
             cerr << "GET_STATUS failed." << endl;
@@ -141,11 +145,11 @@ byte* usb_get_status(libusb_device_handle* dev, bool print, byte bmRequestType, 
     return status;
 }
 
-bool usb_set_idle(libusb_device_handle* dev, word wValue, byte wIndex)
+bool usb_root::usbSetIdle(usb_device& Device, word wValue, byte wIndex)
 {
-    if(dev)
+    if(Device.Handle)
     {
-        int bytes = libusb_control_transfer(dev, 0x21, 0x0A, wValue, wIndex, NULL, 0, 4000);
+        int bytes = libusb_control_transfer(Device.Handle, 0x21, 0x0A, wValue, wIndex, NULL, 0, 4000);
         if (bytes < 0)
         {
             cerr << "SET_IDLE failed." << endl;
@@ -161,12 +165,12 @@ bool usb_set_idle(libusb_device_handle* dev, word wValue, byte wIndex)
     return true;
 }
 
-bool usb_set_report_request(libusb_device_handle* dev, word wValue, word wIndex, byte* data, word wLength)
+bool usb_root::usbSetReportRequest(usb_device &Device, word wValue, word wIndex, byte* data, word wLength)
 {
-    if(dev)
+    if(Device.Handle)
     {
         // https://www.usb.org/sites/default/files/documents/hid1_11.pdf
-        libusb_control_transfer(dev, 0x21, 0x09, wValue, wIndex, data, wLength, 4000);
+        libusb_control_transfer(Device.Handle, 0x21, 0x09, wValue, wIndex, data, wLength, 4000);
         return false;
     }
     else
