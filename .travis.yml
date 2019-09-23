@@ -8,6 +8,13 @@ compiler:
   - clang
  
 script: make
-before_install:
-   - if [ "$TRAVIS_OS_NAME" = "osx" ]; then brew install libusb
-   - if [ "$TRAVIS_OS_NAME" = "linux" ]; then sudo apt-get install -y libusb-dev libusb-1.0-0 libusb-1.0-0-dev libudev1
+  
+ addons:
+   homebrew:
+     packages:
+       - beanstalk
+    apt:
+      packages:
+        - libusb-1.0-0
+        - libusb-1.0-0-dev
+  
