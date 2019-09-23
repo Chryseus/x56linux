@@ -48,15 +48,21 @@ void printPacket(byte* packet)
 int main(int argc, char* argv[])
 {
     auto Usb = new usb_root;
-    int count = 0;
+
+    /*
+        Excluding this until library version checking is added to build process.
+        libusb_set_option(&Usb->Context, LIBUSB_OPTION_LOG_LEVEL, LIBUSB_LOG_LEVEL_WARNING);
+        libusb_set_debug(&Usb->Context, LIBUSB_LOG_LEVEL_WARNING)
+    */
 
     if (libusb_init(&Usb->Context) < 0)
     {
         cerr << "Failed to initialise libusb." << endl;
         return -1;
     }
-    libusb_set_option(Usb->Context, LIBUSB_OPTION_LOG_LEVEL, LIBUSB_LOG_LEVEL_WARNING);
 
+
+    int count = 0;
     if ((count = Usb->listDevices()) < 0)
     {
         cerr << "Failed to get device list." << endl;
