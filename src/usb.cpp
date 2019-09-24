@@ -15,6 +15,7 @@ int usb_root::listDevices()
         cerr <<  "Failed to get device list." << endl;
         return -1;
     }
+    cout << "Looking for compatible devices." << endl;
 
     /* Iterate through all devices and add matching ones to a list */
     for (auto i = 0; i < deviceCount; i++)
@@ -47,7 +48,9 @@ int usb_root::listDevices()
                 Device->port = libusb_get_device_address(Temp);
                 Device->id = this->DeviceList.size()+1;
                 this->DeviceList.push_back(Device);
-                cout << this->DeviceList.size() << ": X-56 Joystick" << endl;
+                cout << this->DeviceList.size() << ": X-56 Joystick, bus "
+                    << static_cast<int>(libusb_get_bus_number(Temp)) << " device "
+                    << static_cast<int>(libusb_get_device_address(Temp)) << endl;
                 found_devices++;
             }
             if(Descriptor.idProduct == 0xa221)
@@ -65,7 +68,9 @@ int usb_root::listDevices()
                 }
                 Device->id = this->DeviceList.size()+1;
                 this->DeviceList.push_back(Device);
-                cout << this->DeviceList.size() << ": X-56 Throttle" << endl;
+                cout << this->DeviceList.size() << ": X-56 Throttle, bus "
+                    << static_cast<int>(libusb_get_bus_number(Temp)) << " device "
+                    << static_cast<int>(libusb_get_device_address(Temp)) << endl;
                 found_devices++;
             }
         }

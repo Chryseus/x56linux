@@ -55,6 +55,8 @@ int main(int argc, char* argv[])
         libusb_set_debug(&Usb->Context, LIBUSB_LOG_LEVEL_WARNING)
     */
 
+    cout << "X-56 configuration utility" << endl;
+
     if (libusb_init(&Usb->Context) < 0)
     {
         cerr << "Failed to initialise libusb." << endl;
