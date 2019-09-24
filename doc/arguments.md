@@ -10,7 +10,7 @@ Displays a summary of command line arguments
 Verbose output
 
 **-d** \<device_id>  
-Select device by ID
+Select device by ID, zero selects all compatible devices
 
 **--rgb**\<color>  
 Sets the lighting color, correct format is R,G,B where the value of each is between 0 and 255, I.E --rgb 255,100,255
@@ -49,3 +49,9 @@ Get the current configuration for device 1
 
 -d 1 -a 1,2 -d 50 -c 450  
 Sets axis 1 and 2 deadzone to 50 and curvature to 450 for device 1
+
+-d 2 --rgb 255,0,0  
+Set device 1 to red.
+
+-d 0 --rgb 0,255,0
+Set all devices to green.
