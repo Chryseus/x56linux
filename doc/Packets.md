@@ -1,5 +1,7 @@
 # Packet Reference
 
+All of these packets are sent to interface 2 via control transfer Set Report Request (0x21).
+
 ## Joystick Packets
 
 ### packet 1 (unknown)
