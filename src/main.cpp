@@ -5,9 +5,12 @@ using namespace std;
 
 byte PACKET_END[63] = {0x01, 0x01};
 
-void processArguments(int argc, char** argv)
+void processArguments(int argc, char* argv[])
 {
-
+    for(auto i=0; i<argc; i++)
+    {
+        cout << i << " " << argv[i] << endl;
+    }
 }
 
 
@@ -47,6 +50,7 @@ void printPacket(byte* packet)
 
 int main(int argc, char* argv[])
 {
+    processArguments(argc, argv);
     auto Usb = new usb_root;
 
     /*
