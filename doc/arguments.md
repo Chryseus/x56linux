@@ -1,4 +1,4 @@
-# CLI Program Arguments#
+# CLI Program Arguments
 
 **No arguments**  
 Lists compatible devices in the format: device_id: device_name, bus \<usb_bus> device \<usb_device>
