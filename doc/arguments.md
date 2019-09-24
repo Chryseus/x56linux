@@ -12,8 +12,8 @@ Verbose output
 **-d** \<device_id>  
 Select device by ID
 
-**--rgb=**\<color>  
-Sets the lighting color, correct format is R,G,B where the value of each is between 0 and 255, I.E --rgb=255,100,255
+**--rgb**\<color>  
+Sets the lighting color, correct format is R,G,B where the value of each is between 0 and 255, I.E --rgb 255,100,255
 
 **--get**  
 Gets the current axes configuration
@@ -27,13 +27,13 @@ Set the x saturation for the selected axes (0-1000)
 **-y** \<value>  
 Set the y saturation for the selected axes (0-1000)
 
-**-d** \<value>  
+**-z, --deadzone** \<value>  
 Set the deadzone for the selected axes (0-1000)
 
 **-c** \<value>  
 Set the curvature value for the selected axes (0-1000)
 
-**--curve-type=**\<type>  
+**--curve-type**\<type>  
 Set the curve type (j or s)
 
 **--defaults**  
