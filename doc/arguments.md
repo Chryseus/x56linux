@@ -53,5 +53,5 @@ Sets axis 1 and 2 deadzone to 50 and curvature to 450 for device 1
 -d 2 --rgb 255,0,0  
 Set device 1 to red.
 
--d 0 --rgb 0,255,0
+-d 0 --rgb 0,255,0  
 Set all devices to green.
