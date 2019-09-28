@@ -12,7 +12,7 @@ script: make
 addons:
   homebrew:
     packages:
-      - beanstalk
+      - libusb
   apt:
     packages:
       - libusb-1.0-0
