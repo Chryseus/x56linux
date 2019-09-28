@@ -37,7 +37,7 @@ int usb_root::listDevices()
                 Device->Device = Temp;
                 Device->idVendor = Descriptor.idVendor;
                 Device->idProduct = Descriptor.idProduct;
-                Device->identifier = DEV_X56_JOYSTICK;
+                Device->identifier = static_cast<int>(device::DEV_X56_JOYSTICK);
                 Device->interface = 2;
                 if(libusb_open(Device->Device, &Device->Handle) !=  0)
                 {
@@ -47,6 +47,14 @@ int usb_root::listDevices()
                 Device->bus = libusb_get_bus_number(Temp);
                 Device->port = libusb_get_device_address(Temp);
                 Device->id = this->DeviceList.size()+1;
+
+                auto axisX = new Axis(30, string("X axis"), 1000, 1000, 0, 500, string("s"), true);
+                auto axisY = new Axis(31, string("Y axis"), 1000, 1000, 0, 500, string("s"), true);
+                auto axisZ = new Axis(35, string("Z axis"), 1000, 1000, 0, 500, string("s"), false);
+                Device->Axes.push_back(axisX);
+                Device->Axes.push_back(axisY);
+                Device->Axes.push_back(axisZ);
+
                 this->DeviceList.push_back(Device);
                 cout << this->DeviceList.size() << ": X-56 Joystick, bus "
                     << static_cast<int>(libusb_get_bus_number(Temp)) << " device "
@@ -59,7 +67,7 @@ int usb_root::listDevices()
                 Device->Device = Temp;
                 Device->idVendor = Descriptor.idVendor;
                 Device->idProduct = Descriptor.idProduct;
-                Device->identifier = DEV_X56_THROTTLE;
+                Device->identifier = static_cast<int>(device::DEV_X56_THROTTLE);
                 Device->interface = 2;
                 if(libusb_open(Device->Device, &Device->Handle) !=  0)
                 {
@@ -67,6 +75,20 @@ int usb_root::listDevices()
                     return -1;
                 }
                 Device->id = this->DeviceList.size()+1;
+
+                auto axisLThrottle = new Axis(30, string("Throttle left axis"), 1000, 1000, 0, 500, string("j"), true);
+                auto axisRThrottle = new Axis(31, string("Throttle right axis"), 1000, 1000, 0, 500, string("j"), true);
+                auto axisRot1 = new Axis(32, string("Rotary 1 axis"), 1000, 1000, 0, 500, string("s"), false);
+                auto axisRot2 = new Axis(35, string("Rotary 2 axis"), 1000, 1000, 0, 500, string("s"), false);
+                auto axisRot3 = new Axis(37, string("Rotary 3 axis"), 1000, 1000, 0, 500, string("s"), false);
+                auto axisRot4 = new Axis(36, string("Rotary 4 axis"), 1000, 1000, 0, 500, string("s"), false);
+                Device->Axes.push_back(axisLThrottle);
+                Device->Axes.push_back(axisRThrottle);
+                Device->Axes.push_back(axisRot1);
+                Device->Axes.push_back(axisRot2);
+                Device->Axes.push_back(axisRot3);
+                Device->Axes.push_back(axisRot4);
+
                 this->DeviceList.push_back(Device);
                 cout << this->DeviceList.size() << ": X-56 Throttle, bus "
                     << static_cast<int>(libusb_get_bus_number(Temp)) << " device "
@@ -106,7 +128,7 @@ unsigned char usb_root::usbGetConfiguration(usb_device& Device, bool print)
 }
 
 
-bool usb_root::usbSetConfiguration(usb_device& Device, byte config)
+bool usb_root::usbSetConfiguration(usb_device& Device, unsigned char config)
 {
     if(Device.Handle)
     {
@@ -126,9 +148,9 @@ bool usb_root::usbSetConfiguration(usb_device& Device, byte config)
     return true;
 }
 
-byte* usb_root::usbGetStatus(usb_device& Device, bool print, byte bmRequestType, byte wIndex)
+unsigned char* usb_root::usbGetStatus(usb_device& Device, bool print, unsigned char bmRequestType, unsigned char wIndex)
 {
-    byte* status = new(byte[1]);
+    unsigned char* status = new(unsigned char[1]);
     if(Device.Handle)
     {
         int bytes = libusb_control_transfer(Device.Handle, bmRequestType, 0, 0, wIndex, status, 2, 4000);
@@ -150,7 +172,7 @@ byte* usb_root::usbGetStatus(usb_device& Device, bool print, byte bmRequestType,
     return status;
 }
 
-bool usb_root::usbSetIdle(usb_device& Device, word wValue, byte wIndex)
+bool usb_root::usbSetIdle(usb_device& Device, word wValue, unsigned char wIndex)
 {
     if(Device.Handle)
     {
@@ -170,7 +192,7 @@ bool usb_root::usbSetIdle(usb_device& Device, word wValue, byte wIndex)
     return true;
 }
 
-bool usb_root::usbSetReportRequest(usb_device &Device, word wValue, word wIndex, byte* data, word wLength)
+bool usb_root::usbSetReportRequest(usb_device &Device, word wValue, word wIndex, unsigned char* data, word wLength)
 {
     if(Device.Handle)
     {

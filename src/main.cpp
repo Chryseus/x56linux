@@ -4,16 +4,16 @@
 
 using namespace std;
 
-byte PACKET_END[63] = {0x01, 0x01};
+unsigned char PACKET_END[63] = {0x01, 0x01};
 
 
 
 
 
 
-byte* getColorPacket(byte red, byte green, byte blue)
+unsigned char* getColorPacket(unsigned char red, unsigned char green, unsigned char blue)
 {
-    byte* colorPacket = new byte[63];
+    unsigned char* colorPacket = new unsigned char[63];
     colorPacket[0] = 0x09;
     colorPacket[1] = 0x00;
     colorPacket[2] = 0x03;
@@ -27,7 +27,7 @@ byte* getColorPacket(byte red, byte green, byte blue)
     return colorPacket;
 }
 
-void setColor(usb_root &Usb, usb_device &Device, byte red, byte green, byte blue)
+void setColor(usb_root &Usb, usb_device &Device, unsigned char red, unsigned char green, unsigned char blue)
 {
     auto Color = getColorPacket(red, green, blue);
     Usb.usbSetReportRequest(Device, 0x309, (2<<8), Color, 64);
@@ -35,7 +35,7 @@ void setColor(usb_root &Usb, usb_device &Device, byte red, byte green, byte blue
     delete[] Color;
 }
 
-void printPacket(byte* packet)
+void printPacket(unsigned char* packet)
 {
     for (auto i = 0; i < 64; i++)
     {
@@ -49,6 +49,7 @@ int main(int argc, char* argv[])
 {
     auto options = Options::getInstance();
     options->processArguments(argc, argv);
+    
     auto Usb = new usb_root;
 
     /*

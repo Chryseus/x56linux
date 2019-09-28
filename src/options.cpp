@@ -247,7 +247,7 @@ void Options::processArguments(int argc, char* argv[])
             case '?':
                 break;
             default:
-                exit(-1);
+                break;
         }
 
         if (setting_specified && !device_selected)
