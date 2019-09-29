@@ -10,6 +10,8 @@
 #include <iterator>
 using namespace std;
 
+enum Color : int { COLOR_RED=0, COLOR_GREEN=1, COLOR_BLUE = 2};
+
 class Options
 {
 public:
@@ -19,7 +21,7 @@ public:
     void processArguments(int argc, char* argv[]);
     bool opt_verbose;
     vector<int> opt_devices;
-    vector<unsigned char> opt_rgb;
+    vector<uint8_t> opt_rgb;
     bool opt_get;
     vector<int> opt_axes;
     int opt_x;
@@ -29,6 +31,8 @@ public:
     string opt_curve;
     bool opt_defaults;
     bool opt_calibrate;
+    bool opt_setRGB;
+    bool opt_list;
 private:
     static Options* Instance;
     Options();

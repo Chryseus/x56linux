@@ -3,6 +3,21 @@
 
 using namespace std;
 
+usb_device::usb_device()
+{
+
+}
+
+void usb_root::printPacket(uint8_t* packet)
+{
+    for (auto i = 0; i < 64; i++)
+    {
+        cout << hex << setfill('0') << setw(2) << static_cast<int>(packet[i]) << " ";
+        if (i+1 > 1 && (i+1) % 8 == 0) { cout << endl; }
+    }
+    cout << endl;
+}
+
 int usb_root::listDevices()
 {
     libusb_device** DeviceList;
@@ -38,11 +53,16 @@ int usb_root::listDevices()
                 Device->idVendor = Descriptor.idVendor;
                 Device->idProduct = Descriptor.idProduct;
                 Device->identifier = static_cast<int>(device::DEV_X56_JOYSTICK);
-                Device->interface = 2;
+                Device->interfaces.push_back(2);
+                Device->interfaces.push_back(0);
                 if(libusb_open(Device->Device, &Device->Handle) !=  0)
                 {
                     cerr << "Failed to get device handle, are you root?." << endl;
                     return -1;
+                }
+                else
+                {
+                    cout << "Opened device " << Device->Device << " handle " << Device->Handle << endl;
                 }
                 Device->bus = libusb_get_bus_number(Temp);
                 Device->port = libusb_get_device_address(Temp);
@@ -68,11 +88,16 @@ int usb_root::listDevices()
                 Device->idVendor = Descriptor.idVendor;
                 Device->idProduct = Descriptor.idProduct;
                 Device->identifier = static_cast<int>(device::DEV_X56_THROTTLE);
-                Device->interface = 2;
+                Device->interfaces.push_back(2);
+                Device->interfaces.push_back(0);
                 if(libusb_open(Device->Device, &Device->Handle) !=  0)
                 {
                     cerr << "Failed to get device handle, are you root?." << endl;
                     return -1;
+                }
+                else
+                {
+                    cout << "Opened device " << Device->Device << " handle " << Device->Handle << endl;
                 }
                 Device->id = this->DeviceList.size()+1;
 
@@ -101,14 +126,12 @@ int usb_root::listDevices()
     return found_devices;
 }
 
-
-
-unsigned char usb_root::usbGetConfiguration(usb_device& Device, bool print)
+unsigned char usb_root::usbGetConfiguration(usb_device* Device, bool print)
 {
-    if(Device.Handle)
+    if(Device->Handle)
     {
         unsigned char configuration = 0xFF;
-        int bytes = libusb_control_transfer(Device.Handle, 0x80, 8, 0,0, &configuration, 1, 4000);
+        int bytes = libusb_control_transfer(Device->Handle, 0x80, 8, 0,0, &configuration, 1, 4000);
         if (bytes <= 0 || configuration == 0xFF)
         {
             cerr << "GET_CONFIGURATION failed." << endl;
@@ -127,12 +150,11 @@ unsigned char usb_root::usbGetConfiguration(usb_device& Device, bool print)
     }
 }
 
-
-bool usb_root::usbSetConfiguration(usb_device& Device, unsigned char config)
+bool usb_root::usbSetConfiguration(usb_device* Device, unsigned char config)
 {
-    if(Device.Handle)
+    if(Device->Handle)
     {
-        int bytes = libusb_control_transfer(Device.Handle, 0x00, 9, config, 0, NULL, 0, 4000);
+        int bytes = libusb_control_transfer(Device->Handle, 0x00, 9, config, 0, NULL, 0, 4000);
         if (bytes <= 0)
         {
             cerr << "SET_CONFIGURATION failed." << endl;
@@ -148,12 +170,12 @@ bool usb_root::usbSetConfiguration(usb_device& Device, unsigned char config)
     return true;
 }
 
-unsigned char* usb_root::usbGetStatus(usb_device& Device, bool print, unsigned char bmRequestType, unsigned char wIndex)
+unsigned char* usb_root::usbGetStatus(usb_device* Device, bool print, unsigned char bmRequestType, unsigned char wIndex)
 {
     unsigned char* status = new(unsigned char[1]);
-    if(Device.Handle)
+    if(Device->Handle)
     {
-        int bytes = libusb_control_transfer(Device.Handle, bmRequestType, 0, 0, wIndex, status, 2, 4000);
+        int bytes = libusb_control_transfer(Device->Handle, bmRequestType, 0, 0, wIndex, status, 2, 4000);
         if (bytes <= 0)
         {
             cerr << "GET_STATUS failed." << endl;
@@ -172,11 +194,11 @@ unsigned char* usb_root::usbGetStatus(usb_device& Device, bool print, unsigned c
     return status;
 }
 
-bool usb_root::usbSetIdle(usb_device& Device, word wValue, unsigned char wIndex)
+bool usb_root::usbSetIdle(usb_device* Device, word wValue, unsigned char wIndex)
 {
-    if(Device.Handle)
+    if(Device->Handle)
     {
-        int bytes = libusb_control_transfer(Device.Handle, 0x21, 0x0A, wValue, wIndex, NULL, 0, 4000);
+        int bytes = libusb_control_transfer(Device->Handle, 0x21, 0x0A, wValue, wIndex, NULL, 0, 4000);
         if (bytes < 0)
         {
             cerr << "SET_IDLE failed." << endl;
@@ -192,12 +214,14 @@ bool usb_root::usbSetIdle(usb_device& Device, word wValue, unsigned char wIndex)
     return true;
 }
 
-bool usb_root::usbSetReportRequest(usb_device &Device, word wValue, word wIndex, unsigned char* data, word wLength)
+bool usb_root::usbSetReportRequest(usb_device* Device, word wValue, word wIndex, uint8_t* data, word wLength)
 {
-    if(Device.Handle)
+    cout << "usbSetReportRequest Device " << Device->id << " address: " << Device->Device <<  endl;
+    printPacket(data);
+    if(Device->Handle)
     {
         // https://www.usb.org/sites/default/files/documents/hid1_11.pdf
-        libusb_control_transfer(Device.Handle, 0x21, 0x09, wValue, wIndex, data, wLength, 4000);
+        libusb_control_transfer(Device->Handle, 0x21, 0x09, wValue, wIndex, data, wLength, 4000);
         return false;
     }
     else
@@ -207,4 +231,61 @@ bool usb_root::usbSetReportRequest(usb_device &Device, word wValue, word wIndex,
     }
     return true;
 
+}
+
+void usb_root::setRGB(int deviceID, uint8_t red, uint8_t green, uint8_t blue)
+{
+    unsigned char packetEnd[63] = {0x01, 0x01};
+
+
+    uint8_t colorPacket[63];
+    colorPacket[0] = 0x09;
+    colorPacket[1] = 0x00;
+    colorPacket[2] = 0x03;
+    colorPacket[3] = red;
+    colorPacket[4] = green;
+    colorPacket[5] = blue;
+    for (int i = 6; i <= 63; i++)
+    {
+        colorPacket[i] = 0x00;
+    }
+
+    for (auto dev : this->DeviceList)
+    {
+        if (dev->id == deviceID)
+        {
+            cout << "setRGB Device " << dev->id << " address: " << dev->Device <<  endl;
+            this->claimDevice(dev);
+            this->usbSetReportRequest(dev, 0x309, (2<<8), colorPacket, 64);
+            this->usbSetReportRequest(dev, 0x300, (2<<8), packetEnd, 64);
+            this->releaseDevice(dev);
+        }
+    }
+
+
+}
+
+void usb_root::claimDevice(usb_device* Device)
+{
+    for(auto iface : Device->interfaces)
+    {
+        if (libusb_detach_kernel_driver(Device->Handle, iface) == 0)
+        {
+            // cout << "Detached kernel driver." << endl;
+        }
+        if (libusb_claim_interface(Device->Handle, iface) != 0)
+        {
+            cerr << "Could not claim device " << Device->id << endl;
+            exit(-1);
+        }
+    }
+}
+
+void usb_root::releaseDevice(usb_device* Device)
+{
+    for(auto iface : Device->interfaces)
+    {
+        libusb_attach_kernel_driver(Device->Handle, iface);
+        libusb_release_interface(Device->Handle, iface);
+    }
 }

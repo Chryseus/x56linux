@@ -4,59 +4,22 @@
 
 using namespace std;
 
-unsigned char PACKET_END[63] = {0x01, 0x01};
 
 
 
 
 
-
-unsigned char* getColorPacket(unsigned char red, unsigned char green, unsigned char blue)
-{
-    unsigned char* colorPacket = new unsigned char[63];
-    colorPacket[0] = 0x09;
-    colorPacket[1] = 0x00;
-    colorPacket[2] = 0x03;
-    colorPacket[3] = red;
-    colorPacket[4] = green;
-    colorPacket[5] = blue;
-    for (int i = 6; i <= 63; i++)
-    {
-        colorPacket[i] = 0x00;
-    }
-    return colorPacket;
-}
-
-void setColor(usb_root &Usb, usb_device &Device, unsigned char red, unsigned char green, unsigned char blue)
-{
-    auto Color = getColorPacket(red, green, blue);
-    Usb.usbSetReportRequest(Device, 0x309, (2<<8), Color, 64);
-    Usb.usbSetReportRequest(Device, 0x300, (2<<8), PACKET_END, 64);
-    delete[] Color;
-}
-
-void printPacket(unsigned char* packet)
-{
-    for (auto i = 0; i < 64; i++)
-    {
-        cout << packet[i] << " ";
-        if (i+1 > 1 && (i+1) % 8 == 0) { cout << endl; }
-    }
-    cout << endl;
-}
 
 int main(int argc, char* argv[])
 {
     auto options = Options::getInstance();
     options->processArguments(argc, argv);
-    
+
     auto Usb = new usb_root;
 
-    /*
-        Excluding this until library version checking is added to build process.
-        libusb_set_option(&Usb->Context, LIBUSB_OPTION_LOG_LEVEL, LIBUSB_LOG_LEVEL_WARNING);
-        libusb_set_debug(&Usb->Context, LIBUSB_LOG_LEVEL_WARNING)
-    */
+
+
+
 
     cout << "X-56 configuration utility" << endl;
 
@@ -66,6 +29,10 @@ int main(int argc, char* argv[])
         return -1;
     }
 
+    // Excluding this until library version checking is added to build process.
+    // libusb_set_option(Usb->Context, LIBUSB_OPTION_LOG_LEVEL, LIBUSB_LOG_LEVEL_WARNING);
+    // libusb_set_debug(&Usb->Context, LIBUSB_LOG_LEVEL_WARNING)
+
 
     int count = 0;
     if ((count = Usb->listDevices()) < 0)
@@ -73,11 +40,29 @@ int main(int argc, char* argv[])
         cerr << "Failed to get device list." << endl;
         return -1;
     }
+    Usb->checkDevices();
 
     if (count == 0)
     {
         cout << "Unable to find any compatible devices." << endl;
+        return 0;
     }
+
+
+    if (options->opt_setRGB)
+    {
+        cout << "set rgb" << endl;
+        uint8_t red = options->opt_rgb[Color::COLOR_RED];
+        uint8_t green = options->opt_rgb[Color::COLOR_GREEN];
+        uint8_t blue = options->opt_rgb[Color::COLOR_BLUE];
+
+            for(int i : options->opt_devices)
+            {
+                Usb->setRGB(i, red, green, blue);
+            }
+    }
+
+
 
     // Find the matching usb devices
 

@@ -26,15 +26,18 @@ Options::Options()
     opt_curve = "";
     opt_defaults = false;
     opt_calibrate = false;
+    opt_setRGB = false;
+    opt_list = false;
 }
 
 void Options::printHelp()
 {
     cout << "Option summary" << endl;
 
-    cout << "\tno options\t\t List supported devices" << endl;
+
     cout << "\t-h, --help\t\t Display help" << endl;
     cout << "\t-v, --verbose\t\t Display verbose output" << endl;
+    cout << "\t-l\t\t List supported devices" << endl;
     cout << "\t-d [device]\t\t Select device" << endl;
     cout << "\t--rgb [R,G,B]\t\t Set RGB lighting color [0-255]" << endl;
     cout << "\t--get\t\t\t Display current configuration" << endl;
@@ -74,7 +77,7 @@ void Options::processArguments(int argc, char* argv[])
 
     while(c != -1)
     {
-        c = getopt_long (argc, argv, "hva:x:y:d:c:z:", long_options, &option_index);
+        c = getopt_long (argc, argv, "hlva:x:y:d:c:z:", long_options, &option_index);
         switch(c)
         {
             case 'h': // -h, --help
@@ -83,6 +86,10 @@ void Options::processArguments(int argc, char* argv[])
 
             case 'v': // -v, --verbose
                 this->opt_verbose = true;
+                break;
+
+            case 'l': // -l
+                this->opt_list = true;
                 break;
 
             case 'z': // -z, --deadzone
@@ -109,7 +116,7 @@ void Options::processArguments(int argc, char* argv[])
                 string a = string(optarg);
                 stringstream ss(a);
                 string token;
-                vector<unsigned char> rgb;
+                vector<uint8_t> rgb;
                 while(getline(ss, token, ','))
                 {
                     int num = stoi(token);
@@ -126,6 +133,7 @@ void Options::processArguments(int argc, char* argv[])
                     exit(-1);
                 }
                 this->opt_rgb = rgb;
+                this->opt_setRGB = true;
                 break;
             }
 

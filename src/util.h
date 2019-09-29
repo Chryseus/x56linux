@@ -3,6 +3,7 @@
 
 enum class device : int { DEV_X56_JOYSTICK, DEV_X56_THROTTLE };
 
+
 typedef uint16_t word;
 #define PACKET_IN (1<<7)
 
