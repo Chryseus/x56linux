@@ -8,12 +8,17 @@ usb_device::usb_device()
 
 }
 
-void usb_root::printPacket(uint8_t* packet)
+void usb_root::printPacket(uint8_t* packet, uint8_t len)
 {
-    for (auto i = 0; i < 64; i++)
+    if(len <=0)
+    {
+        cerr << "Print packet error, zero length specified." << endl;
+        return;
+    }
+    for (auto i = 0; i < len; i++)
     {
         cout << hex << setfill('0') << setw(2) << static_cast<int>(packet[i]) << " ";
-        if (i+1 > 1 && (i+1) % 8 == 0) { cout << endl; }
+        if (i+1 > 1 && (i+1) % 8 == 0) { cout << endl; } // newline every 8 bytes
     }
     cout << endl;
 }
@@ -216,8 +221,7 @@ bool usb_root::usbSetIdle(usb_device* Device, word wValue, unsigned char wIndex)
 
 bool usb_root::usbSetReportRequest(usb_device* Device, word wValue, word wIndex, uint8_t* data, word wLength)
 {
-    cout << "usbSetReportRequest Device " << Device->id << " address: " << Device->Device <<  endl;
-    printPacket(data);
+    printPacket(data, 64);
     if(Device->Handle)
     {
         // https://www.usb.org/sites/default/files/documents/hid1_11.pdf
@@ -236,8 +240,6 @@ bool usb_root::usbSetReportRequest(usb_device* Device, word wValue, word wIndex,
 void usb_root::setRGB(int deviceID, uint8_t red, uint8_t green, uint8_t blue)
 {
     unsigned char packetEnd[63] = {0x01, 0x01};
-
-
     uint8_t colorPacket[63];
     colorPacket[0] = 0x09;
     colorPacket[1] = 0x00;
@@ -254,7 +256,6 @@ void usb_root::setRGB(int deviceID, uint8_t red, uint8_t green, uint8_t blue)
     {
         if (dev->id == deviceID)
         {
-            cout << "setRGB Device " << dev->id << " address: " << dev->Device <<  endl;
             this->claimDevice(dev);
             this->usbSetReportRequest(dev, 0x309, (2<<8), colorPacket, 64);
             this->usbSetReportRequest(dev, 0x300, (2<<8), packetEnd, 64);

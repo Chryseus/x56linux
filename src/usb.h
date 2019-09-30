@@ -3,14 +3,13 @@
 
 #include <vector>
 #include <string>
-#include <cstddef>
 #include <iomanip>
 #include <libusb-1.0/libusb.h>
 #include "axis.h"
+
 using namespace std;
 
-
-
+/** \brief Stores all information about a specific USB device. */
 class usb_device
 {
 public:
@@ -19,12 +18,12 @@ public:
     libusb_device* Device;
     word idVendor;
     word idProduct;
-    int identifier;
+    int identifier; /// uses device enum
     int id;
-    vector<unsigned char> interfaces;
+    vector<unsigned char> interfaces; /// List of interfaces the device uses
     unsigned char bus;
     unsigned char port;
-    vector<Axis*> Axes;
+    vector<Axis*> Axes; /// List of axes
     ~usb_device() { libusb_close(this->Handle); }
 };
 
@@ -32,7 +31,7 @@ class usb_root
 {
 public:
     usb_root() { }
-    void printPacket(uint8_t* packet);
+    void printPacket(uint8_t* packet, uint8_t len);
     int listDevices();
     unsigned char usbGetConfiguration(usb_device* Device, bool print);
     unsigned char* usbGetStatus(usb_device* Device, bool print, unsigned char bmRequestType, unsigned char wIndex);
