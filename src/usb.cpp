@@ -73,9 +73,9 @@ int usb_root::listDevices()
                 Device->port = libusb_get_device_address(Temp);
                 Device->id = this->DeviceList.size()+1;
 
-                auto axisX = new Axis(30, string("X axis"), 1000, 1000, 0, 500, string("s"), true);
-                auto axisY = new Axis(31, string("Y axis"), 1000, 1000, 0, 500, string("s"), true);
-                auto axisZ = new Axis(35, string("Z axis"), 1000, 1000, 0, 500, string("s"), false);
+                auto axisX = new Axis(30, string("X axis"), 1000, 1000, 0, 500, string("s"), true, 0);
+                auto axisY = new Axis(31, string("Y axis"), 1000, 1000, 0, 500, string("s"), true, 4);
+                auto axisZ = new Axis(35, string("Z axis"), 1000, 1000, 0, 500, string("s"), false, 8);
                 Device->Axes.push_back(axisX);
                 Device->Axes.push_back(axisY);
                 Device->Axes.push_back(axisZ);
@@ -289,4 +289,40 @@ void usb_root::releaseDevice(usb_device* Device)
         libusb_attach_kernel_driver(Device->Handle, iface);
         libusb_release_interface(Device->Handle, iface);
     }
+}
+
+usb_device* usb_root::getDevice(int deviceID)
+{
+    for (auto dev : this->DeviceList)
+    {
+        if (dev->id == deviceID)
+        {
+            return dev;
+        }
+    }
+    return nullptr;
+}
+
+unsigned int usb_device::getAxisData(unsigned char axisID)
+{
+    uint8_t* data = new  uint8_t[63];
+    unsigned int position = 0;
+    stringstream ss;
+    for(int i = 0; i <= 63; i++)
+    {
+        data[i] = 0;
+    }
+    for (auto axis : this->Axes)
+    {
+        if(axis->axisID == axisID)
+        {
+            libusb_interrupt_transfer(this->Handle, 0x81, data, 64, nullptr, 0);
+            usb_root::printPacket(data, 64);
+            ss << (data[0] << 8) + data[1];
+            ss >> hex >> position;
+            delete[] data;
+            return position;
+        }
+    }
+    return 0;
 }

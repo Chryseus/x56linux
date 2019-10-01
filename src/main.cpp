@@ -4,22 +4,12 @@
 
 using namespace std;
 
-
-
-
-
-
-
 int main(int argc, char* argv[])
 {
     auto options = Options::getInstance();
     options->processArguments(argc, argv);
 
     auto Usb = new usb_root;
-
-
-
-
 
     cout << "X-56 configuration utility" << endl;
 
@@ -62,6 +52,12 @@ int main(int argc, char* argv[])
             }
     }
 
+    auto dev = Usb->getDevice(1);
+    Usb->claimDevice(dev);
+    cout << "Data: " << dev->getAxisData(30) << endl;
+    Usb->releaseDevice(dev);
+
+
 
 
     // Find the matching usb devices
@@ -100,6 +96,5 @@ int main(int argc, char* argv[])
         libusb_attach_kernel_driver(throttle_handle, 2);
     }
 
-    if (stick_handle) { libusb_close(stick_handle); }
-    if (throttle_handle) { libusb_close(throttle_handle); }*/
+
 }

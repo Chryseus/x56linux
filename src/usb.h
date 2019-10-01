@@ -4,6 +4,7 @@
 #include <vector>
 #include <string>
 #include <iomanip>
+#include <sstream>
 #include <libusb-1.0/libusb.h>
 #include "axis.h"
 
@@ -24,6 +25,7 @@ public:
     unsigned char bus;
     unsigned char port;
     vector<Axis*> Axes; /// List of axes
+    unsigned int getAxisData(unsigned char axisID);
     ~usb_device() { libusb_close(this->Handle); }
 };
 
@@ -31,7 +33,7 @@ class usb_root
 {
 public:
     usb_root() { }
-    void printPacket(uint8_t* packet, uint8_t len);
+    static void printPacket(uint8_t* packet, uint8_t len);
     int listDevices();
     unsigned char usbGetConfiguration(usb_device* Device, bool print);
     unsigned char* usbGetStatus(usb_device* Device, bool print, unsigned char bmRequestType, unsigned char wIndex);
@@ -41,6 +43,7 @@ public:
     void setRGB(int deviceID, uint8_t red, uint8_t green, uint8_t blue);
     void claimDevice(usb_device* Device);
     void releaseDevice(usb_device* Device);
+    usb_device* getDevice(int deviceID);
     libusb_context* Context;
     vector<usb_device*> DeviceList;
     vector<usb_device*> getDeviceList(){ return this->DeviceList; }
