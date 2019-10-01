@@ -54,7 +54,8 @@ int main(int argc, char* argv[])
 
     auto dev = Usb->getDevice(1);
     Usb->claimDevice(dev);
-    cout << "Data: " << dev->getAxisData(30) << endl;
+    unsigned int pos = dev->getAxisData(30);
+    cout << "Data: " << pos << endl;
     Usb->releaseDevice(dev);
 
 

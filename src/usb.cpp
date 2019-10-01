@@ -286,8 +286,8 @@ void usb_root::releaseDevice(usb_device* Device)
 {
     for(auto iface : Device->interfaces)
     {
-        libusb_attach_kernel_driver(Device->Handle, iface);
         libusb_release_interface(Device->Handle, iface);
+        libusb_attach_kernel_driver(Device->Handle, iface);
     }
 }
 
@@ -316,9 +316,9 @@ unsigned int usb_device::getAxisData(unsigned char axisID)
     {
         if(axis->axisID == axisID)
         {
-            libusb_interrupt_transfer(this->Handle, 0x81, data, 64, nullptr, 0);
+            libusb_interrupt_transfer(this->Handle, 0x81, data, 64, nullptr, 0); // endpoint 1
             usb_root::printPacket(data, 64);
-            ss << (data[0] << 8) + data[1];
+            ss << (data[1] << 8) + data[0];
             ss >> hex >> position;
             delete[] data;
             return position;
