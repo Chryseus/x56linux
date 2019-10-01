@@ -95,6 +95,7 @@ int main(int argc, char* argv[])
         libusb_release_interface(throttle_handle, 2);
         libusb_attach_kernel_driver(throttle_handle, 2);
     }
-
+    */
 
 }
+
