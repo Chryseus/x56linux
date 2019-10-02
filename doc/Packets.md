@@ -74,3 +74,14 @@ close to what would be expected from the zero position of the joystick.
 ## RGB Lighting (Both)
 
 Send RGB color packet followed by packet 4.
+
+## Data packets (interrupt endpoint 1)
+
+### Joystick
+* bytes 1-2 = X axis position (0 to 0xffff)
+* bytes 3-4 = Y axis position (0 to 0xffff)
+* bytes 5-6 = Z axis position (0 to 0xfff)
+* Remaining bytes assumed to be buttons, needs checking
+
+### Throttle
+* **todo**
