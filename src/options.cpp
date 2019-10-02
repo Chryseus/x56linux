@@ -37,7 +37,6 @@ void Options::printHelp()
 
     cout << "\t-h, --help\t\t Display help" << endl;
     cout << "\t-v, --verbose\t\t Display verbose output" << endl;
-    cout << "\t-l\t\t List supported devices" << endl;
     cout << "\t-d [device]\t\t Select device" << endl;
     cout << "\t--rgb [R,G,B]\t\t Set RGB lighting color [0-255]" << endl;
     cout << "\t--get\t\t\t Display current configuration" << endl;
@@ -54,6 +53,11 @@ void Options::printHelp()
 
 void Options::processArguments(int argc, char* argv[])
 {
+    // List devices if no arguments are given
+    if(argc == 1)
+    {
+        this->opt_list = true;
+    }
     static struct option long_options[] =
     {
         {"help", no_argument, 0, 'h'},
@@ -86,10 +90,6 @@ void Options::processArguments(int argc, char* argv[])
 
             case 'v': // -v, --verbose
                 this->opt_verbose = true;
-                break;
-
-            case 'l': // -l
-                this->opt_list = true;
                 break;
 
             case 'z': // -z, --deadzone

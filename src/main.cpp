@@ -65,48 +65,5 @@ int main(int argc, char* argv[])
         }
     }
 
-    /*
-    auto dev = Usb->getDevice(1);
-    Usb->claimDevice(dev);
-    unsigned int pos = dev->getAxisData(30);
-    cout << "Data: " << pos << endl;
-    Usb->releaseDevice(dev);
-    *?
-
-
-    // Find the matching usb devices
-    if (stick_handle)
-    {
-        libusb_detach_kernel_driver(stick_handle, 2);
-
-        if (libusb_claim_interface(stick_handle, 2) != 0)
-        {
-            cerr << "Could not claim joystick interface 2." << endl;
-            return -1;
-        }
-
-        set_rgb(stick_handle, 0, 255 ,0);
-
-        libusb_release_interface(stick_handle, 2);
-        libusb_attach_kernel_driver(stick_handle, 2);
-    }
-
-    if (throttle_handle)
-    {
-        libusb_detach_kernel_driver(throttle_handle, 2);
-
-        if (libusb_claim_interface(throttle_handle, 2) != 0)
-        {
-            cerr << "Could not claim throttle interface 2." << endl;
-            return -1;
-        }
-
-        set_rgb(throttle_handle, 255, 0 ,0);
-
-        libusb_release_interface(throttle_handle, 2);
-        libusb_attach_kernel_driver(throttle_handle, 2);
-    }
-    */
-
 }
 
