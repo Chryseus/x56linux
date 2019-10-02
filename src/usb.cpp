@@ -23,7 +23,7 @@ void usb_root::printPacket(uint8_t* packet, uint8_t len)
     cout << endl;
 }
 
-int usb_root::listDevices()
+int usb_root::listDevices(bool print)
 {
     libusb_device** DeviceList;
     ssize_t deviceCount;
@@ -35,7 +35,7 @@ int usb_root::listDevices()
         cerr <<  "Failed to get device list." << endl;
         return -1;
     }
-    cout << "Looking for compatible devices." << endl;
+    if (print) { cout << "Looking for compatible devices." << endl; }
 
     /* Iterate through all devices and add matching ones to a list */
     for (auto i = 0; i < deviceCount; i++)
@@ -65,25 +65,24 @@ int usb_root::listDevices()
                     cerr << "Failed to get device handle, are you root?." << endl;
                     return -1;
                 }
-                else
-                {
-                    cout << "Opened device " << Device->Device << " handle " << Device->Handle << endl;
-                }
                 Device->bus = libusb_get_bus_number(Temp);
                 Device->port = libusb_get_device_address(Temp);
                 Device->id = this->DeviceList.size()+1;
 
                 auto axisX = new Axis(30, string("X axis"), 1000, 1000, 0, 500, string("s"), true, 0);
-                auto axisY = new Axis(31, string("Y axis"), 1000, 1000, 0, 500, string("s"), true, 4);
-                auto axisZ = new Axis(35, string("Z axis"), 1000, 1000, 0, 500, string("s"), false, 8);
+                auto axisY = new Axis(31, string("Y axis"), 1000, 1000, 0, 500, string("s"), true, 2);
+                auto axisZ = new Axis(35, string("Z axis"), 1000, 1000, 0, 500, string("s"), false, 4);
                 Device->Axes.push_back(axisX);
                 Device->Axes.push_back(axisY);
                 Device->Axes.push_back(axisZ);
 
                 this->DeviceList.push_back(Device);
-                cout << this->DeviceList.size() << ": X-56 Joystick, bus "
-                    << static_cast<int>(libusb_get_bus_number(Temp)) << " device "
-                    << static_cast<int>(libusb_get_device_address(Temp)) << endl;
+                if (print)
+                {
+                    cout << this->DeviceList.size() << ": X-56 Joystick, bus "
+                        << static_cast<int>(libusb_get_bus_number(Temp)) << " device "
+                        << static_cast<int>(libusb_get_device_address(Temp)) << endl;
+                }
                 found_devices++;
             }
             if(Descriptor.idProduct == 0xa221)
@@ -99,10 +98,6 @@ int usb_root::listDevices()
                 {
                     cerr << "Failed to get device handle, are you root?." << endl;
                     return -1;
-                }
-                else
-                {
-                    cout << "Opened device " << Device->Device << " handle " << Device->Handle << endl;
                 }
                 Device->id = this->DeviceList.size()+1;
 
@@ -120,9 +115,12 @@ int usb_root::listDevices()
                 Device->Axes.push_back(axisRot4);
 
                 this->DeviceList.push_back(Device);
-                cout << this->DeviceList.size() << ": X-56 Throttle, bus "
-                    << static_cast<int>(libusb_get_bus_number(Temp)) << " device "
-                    << static_cast<int>(libusb_get_device_address(Temp)) << endl;
+                if (print)
+                {
+                    cout << this->DeviceList.size() << ": X-56 Throttle, bus "
+                        << static_cast<int>(libusb_get_bus_number(Temp)) << " device "
+                        << static_cast<int>(libusb_get_device_address(Temp)) << endl;
+                }
                 found_devices++;
             }
         }
@@ -303,11 +301,11 @@ usb_device* usb_root::getDevice(int deviceID)
     return nullptr;
 }
 
-unsigned int usb_device::getAxisData(unsigned char axisID)
+uint16_t usb_device::getAxisData(unsigned char axisID)
 {
-    uint8_t* data = new  uint8_t[63];
-    unsigned int position = 0;
+    //cout << "Debug: getAxisData called with axisID = " << static_cast<int>(axisID) << endl;
     stringstream ss;
+    uint8_t* data = new uint8_t[63];
     for(int i = 0; i <= 63; i++)
     {
         data[i] = 0;
@@ -316,10 +314,15 @@ unsigned int usb_device::getAxisData(unsigned char axisID)
     {
         if(axis->axisID == axisID)
         {
+            uint8_t dataOffset = axis->dataOffset;
+            //cout << "offset: " << static_cast<int>(dataOffset) << endl;
             libusb_interrupt_transfer(this->Handle, 0x81, data, 64, nullptr, 0); // endpoint 1
-            usb_root::printPacket(data, 64);
-            ss << (data[1] << 8) + data[0];
-            ss >> hex >> position;
+            //usb_root::printPacket(data, 64);
+            unsigned int position;
+            //cout << hex << static_cast<unsigned int>(data[dataOffset]) << " " << static_cast<unsigned int>(data[dataOffset+1])<< endl;
+            ss << (data[dataOffset+1] << 8) + data[dataOffset];
+            ss  >> dec >> position;
+            //cout << hex << position << dec << endl;
             delete[] data;
             return position;
         }

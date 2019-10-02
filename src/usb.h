@@ -25,7 +25,7 @@ public:
     unsigned char bus;
     unsigned char port;
     vector<Axis*> Axes; /// List of axes
-    unsigned int getAxisData(unsigned char axisID);
+    uint16_t getAxisData(unsigned char axisID);
     ~usb_device() { libusb_close(this->Handle); }
 };
 
@@ -34,7 +34,7 @@ class usb_root
 public:
     usb_root() { }
     static void printPacket(uint8_t* packet, uint8_t len);
-    int listDevices();
+    int listDevices(bool print);
     unsigned char usbGetConfiguration(usb_device* Device, bool print);
     unsigned char* usbGetStatus(usb_device* Device, bool print, unsigned char bmRequestType, unsigned char wIndex);
     bool usbSetConfiguration(usb_device* Device, unsigned char config);
@@ -47,15 +47,6 @@ public:
     libusb_context* Context;
     vector<usb_device*> DeviceList;
     vector<usb_device*> getDeviceList(){ return this->DeviceList; }
-    void checkDevices()
-    {
-        for (auto dev : this->DeviceList)
-        {
-            cout << "id: " << dev->id
-                << " address: " << dev->Device
-                << " handle: " << dev->Handle << endl;
-        }
-    }
 };
 
 

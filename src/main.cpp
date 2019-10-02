@@ -23,14 +23,12 @@ int main(int argc, char* argv[])
     // libusb_set_option(Usb->Context, LIBUSB_OPTION_LOG_LEVEL, LIBUSB_LOG_LEVEL_WARNING);
     // libusb_set_debug(&Usb->Context, LIBUSB_LOG_LEVEL_WARNING)
 
-
     int count = 0;
-    if ((count = Usb->listDevices()) < 0)
+    if ((count = Usb->listDevices(options->opt_list)) < 0)
     {
         cerr << "Failed to get device list." << endl;
         return -1;
     }
-    Usb->checkDevices();
 
     if (count == 0)
     {
@@ -52,19 +50,31 @@ int main(int argc, char* argv[])
             }
     }
 
+    if(options->opt_get)
+    {
+        for(int i : options->opt_devices)
+        {
+            auto Dev = Usb->getDevice(i);
+            Usb->claimDevice(Dev);
+            for(auto Axis : Dev->Axes)
+            {
+                unsigned int data = Dev->getAxisData(Axis->axisID);
+                cout << Axis->axisName << " position: " << data << endl;
+            }
+            Usb->releaseDevice(Dev);
+        }
+    }
+
+    /*
     auto dev = Usb->getDevice(1);
     Usb->claimDevice(dev);
     unsigned int pos = dev->getAxisData(30);
     cout << "Data: " << pos << endl;
     Usb->releaseDevice(dev);
-
-
+    *?
 
 
     // Find the matching usb devices
-
-
-    /*
     if (stick_handle)
     {
         libusb_detach_kernel_driver(stick_handle, 2);
