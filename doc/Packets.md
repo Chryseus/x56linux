@@ -12,14 +12,14 @@ All of these packets are sent to interface 2 via control transfer Set Report Req
 * byte 1-2 = constant (0b 04)
 * byte 3-4 = axis id
 
-### packet 3 (configuration)
+### packet 3 (configuration set) [feature set]
 * byte 1-3 = constant (0b 01 00)
 * byte 4 = axis id
 * byte 5-7 = constant (00 01 00)
 * bytes 1-8 = axis selection, axis id at byte 4 and 8
 * bytes 9-10 = xsat (0 to 1000)
 * bytes 11-12 = ysat (0 to 1000)
-* bytes 15-16 = curve (0 to 1000)
+* bytes 15-16 = curvature (0 to 1000)
 * bytes 13-14 = deadband (0 to 1000)
 * byte 17 = profile (01 = J, 00 = S)
 * bytes 18-19 = hall effect zero calibration, zero for other axis
@@ -27,9 +27,33 @@ All of these packets are sent to interface 2 via control transfer Set Report Req
 ### packet 4 (unknown, end of config ?)
 bytes 1-2 = constant (01 01)
 
-### packet 5 (RGB color set)
+### packet 5 (RGB color set) [feature set]
 * bytes 1-3 = constant (09 00 03)
 * bytes 4-6 = RGB color 8bit each
+
+### packet 6 (current configuration - X only) [feature request]
+* bytes 1-17 = axid id (repeated)
+* bytes 28-29 = xsat (0 to 1000)
+* bytes 30-31 = ysat (0 to 1000)
+* bytes 32-33 = deadband (0 to 1000)
+* bytes 34-35 = curvature (0 to 100)
+* byte 36 = profile (01 = J, 00 = S)
+* bytes 37-38 = hall effect zero calibration (if applicable)
+
+### packet 7 (request current configuration) [feature set]
+* bytes 1-3 = constant (0b 02 00)
+* byte 4 = axis id
+
+### packet 8 (current configuration)
+* byte 1 = constant (ff)
+* bytes 2-4 = constant (0b 02 00)
+* byte 5 = axis id
+* bytes 10-11 = xsat (0 to 1000)
+* bytes 12-13 = ysat (0 to 1000)
+* bytes 14-15 = deadband (0 to 1000)
+* bytes 16-17 = curvature (0 to 1000)
+* byte 18 = profile (01 = J, 00 = S)
+* bytes 19-20 = hall effect zero calibration (if applicable)
 
 ## Default settings
 * xsat = 1000
@@ -74,3 +98,8 @@ close to what would be expected from the zero position of the joystick.
 ## RGB Lighting (Both)
 
 Send RGB color packet followed by packet 4.
+
+## Get current configuration
+Feature request with report id 8 can be used to obtain the X axis configuration only.
+
+Use packet 7 to get configuration for any axis, configuration is returned by interrupt on endpoint 2 (see packet 8).
