@@ -101,3 +101,14 @@ Send RGB color packet followed by packet 4.
 Feature request with report id 8 can be used to obtain the first axis configuration only.
 
 Use packet 7 to get configuration for any axis, configuration is returned by interrupt on endpoint 2 (see packet 8).
+
+## Data packets (interrupt endpoint 1)
+
+### Joystick
+* bytes 1-2 = X axis position (0 to 0xffff)
+* bytes 3-4 = Y axis position (0 to 0xffff)
+* bytes 5-6 = Z axis position (0 to 0xfff)
+* Remaining bytes assumed to be buttons and hat switch, needs checking
+
+### Throttle
+* **todo**
