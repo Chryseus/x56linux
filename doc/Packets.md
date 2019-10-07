@@ -2,7 +2,7 @@
 
 All control transfers are sent on interface 2.
 
-## Joystick Packets
+## Packets
 
 ### packet 1 (unknown) [feature set]
 * byte 1-2 = constant (0b 03)
