@@ -1,5 +1,6 @@
-
-[![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=4334N54KCX4E4&source=url) ![](https://img.shields.io/github/license/Chryseus/x56linux) ![](https://img.shields.io/travis/Chryseus/x56linux)
+![](https://img.shields.io/github/license/Chryseus/x56linux) ![](https://img.shields.io/travis/Chryseus/x56linux)
+# Notice
+I no longer have the time or will to work on this project, if anyone is interested in continuing it please do so.
 
 # Saitek X-56 HOTAS Configuration Utillity
 Calibration and RGB lighting software for Linux and OS X.
